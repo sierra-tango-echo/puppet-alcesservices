@@ -1,0 +1,6 @@
+#!/bin/bash
+if [ -f /etc/profile.d/alces-symphony.sh ]; then
+  . /etc/profile.d/alces-symphony.sh > /dev/null 2>&1
+fi
+CMD="alces scratchdirs"
+$CMD &>> /var/log/alces/scratchdirs.log

@@ -1,0 +1,27 @@
+bank:
+        /home/backup
+
+image-default: %Y%m%d
+log: gzip
+index: gzip
+
+exclude:
+        /var/cache/apt/archives/*.deb
+        /usr/src/**/*.o
+        lost+found/
+        /tmp/*
+        /var/tmp/*
+        /proc/*
+        /sys
+        /lustre/*
+        /mnt/*
+        /home/*
+        /users/*
+        /home/backup/*
+        /dev/*
+        /opt/gridware/ge/default/spool/*
+
+Runall:
+        master-boot 01:00
+
+expire-default: +2 weeks

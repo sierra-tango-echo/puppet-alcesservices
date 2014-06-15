@@ -1,0 +1,8 @@
+rm -rf /etc/openldap/slapd.d/*
+slapadd -l /etc/openldap/base.ldiff
+slapadd -l /etc/openldap/groups.ldiff
+slaptest -f /etc/openldap/slapd.conf -F /etc/openldap/slapd.d
+chown -R ldap:ldap /etc/openldap/slapd.d
+chown -R ldap:ldap /var/lib/ldap/
+chmod -R 000 /etc/openldap/slapd.d
+chmod -R u+rwX /etc/openldap/slapd.d
