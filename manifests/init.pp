@@ -20,7 +20,9 @@ class alcesservices (
   #Master Alias (network master dns alias)
   $master_alias = hiera('alcesbase::masteralias'),
   #HA (ha enabled?)
-  $ha = hiera('alcesbase::ha',false)
+  $ha = $alcesbase::ha,
+  #Keep os jitter minimal
+  $jitter=$alcesbase::jitter
 )
 {
 
@@ -97,5 +99,9 @@ class alcesservices (
 
   #Configure config management
   class { 'alcesservices::configmgt':
+  }
+
+  #Cofigure VPN
+  class { 'alcesservices::vpn':
   }
 }

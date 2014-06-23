@@ -1,0 +1,64 @@
+#!/bin/bash -x
+################################################################################
+##
+## Alces HPC Software Stack - Puppet configuration files
+## Copyright (c) 2008-2013 Alces Software Ltd
+##
+################################################################################
+
+OPENVPN_PATH=/etc/openvpn
+EASYRSA_PATH=$OPENVPN_PATH/easy-rsa
+EASYRSA_TEMPLATE=/usr/share/easy-rsa/2.0/
+OPENVPN_CLIENT_CONFIG=$OPENVPN_PATH/client.conf
+
+if [ ! -d $OPENVPN_PATH ]; then
+  echo "Cannot locate openvpn config" >&2
+  exit 1
+fi
+
+if [ ! -d $EASYRSA_TEMPLATE ]; then
+  echo "Cannot locate easy-rsa template" >&2
+  exit 1
+fi
+
+if [ -d $EASYRSA_PATH ]; then
+  echo "Cleaning up.."
+  rm -rfv $EASYRSA_PATH
+fi
+
+CN=$1
+if [ -z $CN ]; then
+  CN=`hostname -f`
+fi
+
+echo "Copying templates.."
+cp -pav $EASYRSA_TEMPLATE $EASYRSA_PATH
+
+echo "Setting vars.."
+sed -i $EASYRSA_PATH/vars \
+ -e 's|KEY_COUNTRY=.*$|KEY_COUNTRY=\"GB\"|g' \
+ -e 's|KEY_PROVINCE=.*|KEY_PROVINCE=\"Oxfordshire"|g' \
+ -e 's|KEY_CITY=.*|KEY_CITY=\"Bicester\"|g' \
+ -e 's|KEY_ORG=.*|KEY_ORG=\"Alces Software Ltd\"|g' \
+ -e 's|KEY_EMAIL=.*|KEY_EMAIL=\"ssl@alces-software.com\"|g' \
+ -e 's|KEY_NAME=.*|KEY_NAME=\"server\"|g' \
+ -e 's|KEY_OU=.*|KEY_OU=\"server\"|g' \
+ -e "s|KEY_CN=.*|KEY_CN=\"${CN}\"|g" 
+
+echo "Generating CA.."
+cd $EASYRSA_PATH
+source ./vars
+./clean-all
+./pkitool --initca
+
+echo "Generating Server.."
+./pkitool --server server
+
+echo "Generating DH.."
+./build-dh
+
+echo "Publishing CA.."
+if [ ! -d /opt/alces/docs/vpn ]; then
+  mkdir -p /opt/alces/docs/vpn
+fi
+cp -pav $EASYRSA_PATH/keys/ca.crt /opt/alces/docs/vpn/ca.crt
