@@ -16,9 +16,25 @@ class alcesservices (
   #Cluster name:
   $clustername = hiera('alcesbase::clustername','alcescluster'),
   #Master IP (network master IP addr)
-  $master_ip = hiera('alcesbase::masterip')
+  $master_ip = hiera('alcesbase::masterip'),
+  #Master Alias (network master dns alias)
+  $master_alias = hiera('alcesbase::masteralias'),
+  #HA (ha enabled?)
+  $ha = hiera('alcesbase::ha',false)
 )
 {
+
+  service {'xinetd':
+    ensure=>running,
+    enable=>true
+  }
+
+  #Configure NFS
+  class { 'alcesservices::nfs':
+    fsexports=>hiera('alcesservices::nfsexports',undef),
+    fsimports=>hiera('alcesservices::nfsimports',undef),
+  }
+
   #Configure apache
   class { 'alcesservices::httpd':
   }
@@ -56,5 +72,30 @@ class alcesservices (
   class { 'alcesservices::mail':
     maildomain=>$alcesnetwork::network::primary_domain,
     relayhost=>hiera('alcesservices::mail::relayhost',$master_ip),
+  }
+
+  #Configure DNS
+  class { 'alcesservices::dns':
+    dnsnetworks=>$alcesnetwork::network::dnsnetworks,
+    forwarddns=>$alcesnetwork::network::forwarddns,
+  }
+
+  #Configure SSH
+  class { 'alcesservices::ssh':
+    rsa_key=>hiera('alcesservices::rsa_key',''),
+    rsa_pubkey=>hiera('alcesservices::rsa_pubkey',''),
+    nogenerallogin=>hiera('alcesservices::nogenerallogin',false),
+    root_rsa_key=>hiera('alcesservices::root_rsa_key'),
+    root_rsa_pubkey=>hiera('alcesservices::root_rsa_pubkey'),
+    rootloginnopassword=>hiera('alcesservices::rootloginnopassword',true),
+  }
+ 
+  #Configure Deployment
+  class { 'alcesservices::deployment':
+    root_passwd_md5=>hiera('alcesservices::root_passwd_md5','$1$2iZFK1$0AKQwQPb8rb.3V8J/hyMw1'),
+  }
+
+  #Configure config management
+  class { 'alcesservices::configmgt':
   }
 }

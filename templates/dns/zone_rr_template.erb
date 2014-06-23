@@ -1,0 +1,20 @@
+$TTL 1W
+@  IN  SOA  <%=@servicealias%>.<%=scope.lookupvar('alcesnetwork::network::primary_domain')%>.  root.<%=@servicealias%>.<%=scope.lookupvar('alcesnetwork::network::primary_domain')%>. (
+       2001062501  ; serial
+       2D       ; refresh
+       4H        ; retry
+       6W      ; expire
+       1W )     ; minimum
+
+@  IN  NS   <%=@servicealias%>.<%=scope.lookupvar('alcesnetwork::network::primary_domain')%>.
+
+<% if scope.lookupvar('alcesnetwork::network::primary_domain') == @zone_domain%>
+<%= scope.function_reverse_tail([@serviceip,scope.lookupvar("alcesnetwork::network::primary_netmask")]) %>  IN  PTR  <%=@servicealias%>.<%=scope.lookupvar('alcesnetwork::network::primary_domain')%>.
+<% end %>
+
+<% unless scope.lookupvar("alcesnetwork::network::#{@zone}_ip").to_s.empty? || scope.lookupvar("alcesnetwork::network::#{@zone}_ip") == @serviceip %>
+<%= scope.function_reverse_tail([scope.lookupvar("alcesnetwork::network::#{@zone}_ip"),scope.lookupvar("alcesnetwork::network::primary_netmask")])%>	IN	PTR	<%=scope.lookupvar('::alces_hostname')%>.<%=scope.lookupvar("alcesnetwork::network::#{@zone}_domain")%>.
+<% end %>
+ 
+<%= scope.function_template(["alcesservices/partials/dns/zone_rr_#{@zone}.erb"])-%>
+

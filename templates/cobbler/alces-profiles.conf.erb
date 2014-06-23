@@ -1,0 +1,14 @@
+  #
+  # Alces Build Profiles
+  #
+
+  Alias /alces/profiles /opt/alces/profiles
+
+  <Location /alces/profiles>
+    Options +Indexes
+    Order deny,allow
+    Deny from all
+    Allow from 127.0.0.1
+    Allow from ::1
+    Allow from <%=scope.lookupvar('alcesnetwork::network::primary_network')%>/<%=scope.lookupvar('alcesnetwork::network::primary_netmask')%>
+  </Location>

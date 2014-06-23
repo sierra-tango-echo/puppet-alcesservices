@@ -1,0 +1,8 @@
+11.0   IN  PTR	headnode1.<%=scope.lookupvar("alcesnetwork::network::#{@zone}_domain")%>.
+
+101.1  IN  PTR  node01.<%=scope.lookupvar("alcesnetwork::network::#{@zone}_domain")%>.
+102.1  IN  PTR  node02.<%=scope.lookupvar("alcesnetwork::network::#{@zone}_domain")%>.
+
+1.10	IN PTR	controller.<%=scope.lookupvar("alcesnetwork::network::#{@zone}_domain")%>.
+2.10    IN PTR  storage.<%=scope.lookupvar("alcesnetwork::network::#{@zone}_domain")%>.
+3.10    IN PTR  network.<%=scope.lookupvar("alcesnetwork::network::#{@zone}_domain")%>.

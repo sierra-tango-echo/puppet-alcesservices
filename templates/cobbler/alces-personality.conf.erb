@@ -1,0 +1,14 @@
+  #
+  # Alces Personality Profiles
+  #
+
+  Alias /alces/personality /opt/alces/etc/personalities
+
+  <Location /alces/personality>
+    Options +Indexes
+    Order deny,allow
+    Deny from all
+    Allow from 127.0.0.1
+    Allow from ::1
+    Allow from <%=scope.lookupvar('alcesnetwork::network::primary_network')%>/<%=scope.lookupvar('alcesnetwork::network::primary_netmask')%>
+  </Location>

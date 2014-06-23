@@ -1,0 +1,113 @@
+install
+url --url=$tree
+<% if @operatingsystem =~ /^RedHat/ %>
+repo --name updates --baseurl http://$server/alces/repo/updates/
+repo --name optional --baseurl http://$server/alces/repo/optional/
+<% end -%>
+reboot
+lang en_GB
+cmdline
+services --enabled ntpd
+services --disabled avahi-daemon,avahi-dnsconfd,bluetooth,cups,gmetad,httpd,iptables,ip6tables,sendmail,yum-updatesd,conman,cpuspeed,kdump
+firstboot --disable
+skipx
+
+%include /tmp/security.part
+%include /tmp/localization.part
+%include /tmp/disk.part
+
+%pre
+
+set -x -v
+exec 1>/tmp/alces-pre-install.log 2>&1
+
+
+export MACHINETYPE=$machine
+export DISK1=$disk1
+
+# Once root's homedir is there, copy over the log.
+while : ; do
+    sleep 10
+    if [ -d /mnt/sysimage/root ]; then
+        cp /tmp/alces-pre-install.log /mnt/sysimage/root/
+        logger "Copied %pre section log to system"
+        break
+    fi
+done &
+
+$kickstart_start
+
+which wget
+
+#Echo to all consoles build in progress
+(find /dev/ -maxdepth 1 -name 'tty*' | while read tty; do echo -e "\nSlave installation process is in progress, please wait..\n" > $tty; done) 2> /dev/null
+
+case $MACHINETYPE in
+  headnode)
+    wget 'http://$server/alces/profiles/slave/disk-headnode.part' -O /tmp/disk.part
+  ;;
+  compute)
+    if ( fdisk -l | grep -qi sdc ); then
+      wget 'http://$server/alces/profiles/slave/disk-compute-3disk.part' -O /tmp/disk.part
+    elif ( fdisk -l | grep -qi sdb); then
+      wget 'http://$server/alces/profiles/slave/disk-compute-2disk.part' -O /tmp/disk.part
+    else
+      wget 'http://$server/alces/profiles/slave/disk-compute.part' -O /tmp/disk.part
+    fi
+  ;;
+  fatcompute)
+    wget 'http://$server/alces/profiles/slave/disk-compute.part' -O /tmp/disk.part
+  ;;
+  storage)
+    wget 'http://$server/alces/profiles/slave/disk-storage.part' -O /tmp/disk.part
+  ;;
+  login)
+    wget 'http://$server/alces/profiles/slave/disk-login.part' -O /tmp/disk.part
+  ;;
+  vcompute)
+    wget 'http://$server/alces/profiles/slave/disk-vcompute.part' -O /tmp/disk.part
+  ;;
+  *)
+    wget 'http://$server/alces/profiles/slave/disk.part' -O /tmp/disk.part
+  ;;
+esac
+
+#Replace variables with those sent from cobbler
+if [ -z $DISK1 ]; then
+  if [ $MACHINETYPE = 'vcompute' ]; then
+    DISK1=vda
+  else
+    DISK1=sda
+  fi
+fi
+if ( echo $serial | grep -q -e 'SERIAL$'); then
+  BOOTLOADERAPPEND="console=ttyS1,115200"
+else
+  BOOTLOADERAPPEND=""
+fi
+
+sed -i -e "s/%DISK1%/$DISK1/g" \
+       -e "s/%BOOTLOADERAPPEND%/$BOOTLOADERAPPEND/g" /tmp/disk.part
+
+
+wget 'http://$server/alces/profiles/slave/security.part' -O /tmp/security.part
+
+wget 'http://$server/alces/profiles/slave/localization.part' -O /tmp/localization.part
+
+wget 'http://$server/alces/profiles/slave/prescript.part' -O /tmp/prescript.part
+
+wget 'http://$server/alces/profiles/slave/packages.part' -O /tmp/packages.part
+
+(
+/bin/bash -x /tmp/prescript.part $server $MACHINETYPE
+) 2>&1 | /usr/bin/tee /root/alces-pre-install.log /dev/ttyS0 /dev/ttyS1 /dev/tty1 /dev/tty3
+
+%include /tmp/packages.part
+
+%post
+export MACHINETYPE=$machine
+(
+wget 'http://$server/alces/profiles/slave/postscript.part' -O /tmp/postscript.part
+/bin/bash -x /tmp/postscript.part $server $MACHINETYPE
+) 2>&1 | /usr/bin/tee /root/alces-post-install.log /dev/ttyS0 /dev/ttyS1 /dev/tty1 /dev/tty3
+$SNIPPET('kickstart_done')

@@ -1,0 +1,86 @@
+# ******************************************************************
+# Cobbler managed dhcpd.conf file
+#
+# generated from cobbler dhcp.conf template ($date)
+#
+# ******************************************************************
+
+not authoritative;
+
+ddns-update-style interim;
+ddns-domainname "<%=scope.lookupvar('alcesnetwork::network::primary_domain')%>";
+use-host-decl-names on;
+
+option space pxelinux;
+option pxelinux.magic      code 208 = string;
+option pxelinux.configfile code 209 = text;
+option pxelinux.pathprefix code 210 = text;
+option pxelinux.reboottime code 211 = unsigned integer 32;
+
+allow booting;
+allow bootp;
+
+ignore client-updates;
+set vendorclass = option vendor-class-identifier;
+site-option-space "pxelinux";
+option pxelinux.magic f1:00:74:7e;
+if exists dhcp-parameter-request-list {
+	option dhcp-parameter-request-list = concat(option dhcp-parameter-request-list,d0,d1,d2,d3);
+}
+option pxelinux.reboottime 30;
+
+<% unless scope.lookupvar('alcesnetwork::network::primary_network').empty?%>
+    subnet <%=scope.lookupvar('alcesnetwork::network::primary_network')%> netmask <%=scope.lookupvar('alcesnetwork::network::primary_netmask')%> {
+    option routers <%=scope.lookupvar('alcesnetwork::network::primary_gateway')%>;
+    option domain-name-servers <%=@masterip%>;
+    option domain-search "<%=scope.lookupvar('alcesnetwork::network::primary_domain')%>"<% unless scope.lookupvar('alcesnetwork::network::dnssearchdomains').empty?%>,<%=scope.lookupvar('alcesnetwork::network::dnssearchdomains').collect{|x| "\"#{x}\""}.join(",")%><%end%>;
+    option subnet-mask	<%=scope.lookupvar('alcesnetwork::network::primary_netmask')%>;
+    default-lease-time	21600;
+    max-lease-time	43200;
+    
+    option ntp-servers <%=@masterip%>;
+    
+    #PXE
+    option vendor-encapsulated-options 3c:09:45:74:68:65:72:62:6f:6f:74:ff;
+    filename		"/pxelinux.0";
+    next-server		$next_server;
+    }
+<% end %>
+
+#for dhcp_tag in $dhcp_tags.keys():
+    ## group could be subnet if your dhcp tags line up with your subnets
+    ## or really any valid dhcpd.conf construct ... if you only use the
+    ## default dhcp tag in cobbler, the group block can be deleted for a
+    ## flat configuration
+# group for Cobbler DHCP tag: $dhcp_tag
+group {
+    host portal-vacs {
+        hardware ethernet 52:54:00:bd:64:11;
+            fixed-address 10.10.0.2;
+            option host-name vacs-dell223;
+    }
+        #for mac in $dhcp_tags[$dhcp_tag].keys():
+            #set iface = $dhcp_tags[$dhcp_tag][$mac]
+
+    host $iface.name {
+        hardware ethernet $mac;
+        #if $iface.ip_address:
+            fixed-address $iface.ip_address;
+        #end if
+        #if $iface.subnet:
+            option subnet-mask $iface.subnet;
+        #end if
+        #if $iface.gateway:
+            option routers $iface.gateway;
+        #end if
+        #if $iface.netboot_enabled:
+            filename "$iface.filename";
+            next-server $next_server;
+        #end if
+        #if $iface.hostname:
+            option host-name $iface.hostname;
+        #end if
+    }
+        #end for
+}
+#end for
