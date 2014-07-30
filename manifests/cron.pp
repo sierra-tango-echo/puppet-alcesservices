@@ -6,6 +6,11 @@
 ###############################################################################
 class alcesservices::cron
 {
+
+  package {'vixie-cron':
+    ensure=>installed,
+  }
+
   #Disable cron called updatedb on slave nodes
   if $alcesservices::role=='slave' {
     file {'/etc/cron.daily/mlocate.cron':

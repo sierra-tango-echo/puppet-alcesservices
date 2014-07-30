@@ -16,6 +16,15 @@ class alcesservices::deployment (
       package {'cobbler':
                 ensure=>installed
               }
+      package {'cobbler-web':
+                ensure=>installed
+              }
+      package {'dhcp':
+                ensure=>installed
+              }
+      package {'tftp':
+                ensure=>installed
+              }
       service {'cobblerd':
                enable=>'true',
                ensure=>'running',

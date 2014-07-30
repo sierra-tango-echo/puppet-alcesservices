@@ -48,12 +48,15 @@ class alcesservices::dns (
         notify=>Service['named']
       }
       service {'dnsmasq':
-         enable=>false,
          ensure=>stopped,
+         enable=>false,
       }
     }
   }
   else {
+    package {'dnsmasq':
+      ensure=>installed,
+    }
     service {'dnsmasq':
       enable=>true,
       ensure=>running,

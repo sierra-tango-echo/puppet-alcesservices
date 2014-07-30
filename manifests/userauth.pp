@@ -177,6 +177,7 @@ class alcesservices::userauth (
   }
 
   if $enablenis {
+
     file {'/etc/yp.conf':
       ensure=>present,
       mode=>0644,
@@ -198,6 +199,11 @@ class alcesservices::userauth (
       require=>Package['ypbind'],
       refreshonly=>true
     }
+   
+    augeas {'sysconfignetwork-nisdomain':
+      context => "/files/etc/sysconfig/network",
+      changes => "set NISDOMAIN $nisdomain",
+    } 
 
     if $alcesservices::role=='slave' {
       service { 'ypbind':

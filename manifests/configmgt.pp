@@ -15,6 +15,9 @@ class alcesservices::configmgt (
       package {'puppet-server':
         ensure=>installed,
       }
+      package {'hiera':
+        ensure=>installed,
+      }
       file {'/etc/puppet/manifests/site.pp':
         ensure=>present,
         mode=>0644,

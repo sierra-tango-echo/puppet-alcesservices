@@ -13,6 +13,9 @@ class alcesservices (
   # - slave
   # - master
   $role = hiera('alcesbase::role','slave'),
+  #Supported machines
+  # - generic
+  $machine = hiera('alcesbase::machine','generic'),
   #Cluster name:
   $clustername = hiera('alcesbase::clustername','alcescluster'),
   #Master IP (network master IP addr)
