@@ -115,96 +115,96 @@ class alcesservices::deployment (
        }
 
        #Profile builder
-       file {'/opt/alces/profiles/':
+       file {'/var/lib/alces/clusterware/etc/profiles/':
             ensure=>directory,
             mode=>0755,
             owner=>'root',
             group=>'root',
        }
-       file {'/opt/alces/profiles/slave':
+       file {'/var/lib/alces/clusterware/etc/profiles/slave':
              ensure=>directory,
              mode=>0755,
              owner=>'root',
              group=>'root'
        }
-       file {'/opt/alces/profiles/slave/localization.part':
+       file {'/var/lib/alces/clusterware/etc/profiles/slave/localization.part':
             ensure=>present,
             mode=>0644,
             owner=>'root',
             group=>'root',
             content=>template("alcesservices/cobbler/slave/localization.part.erb"),
        }
-       file {'/opt/alces/profiles/slave/security.part':
+       file {'/var/lib/alces/clusterware/etc/profiles/slave/security.part':
             ensure=>present,
             mode=>0644,
             owner=>'root',
             group=>'root',
             content=>template("alcesservices/cobbler/slave/security.part.erb"),
        }
-       file {'/opt/alces/profiles/slave/disk.part':
+       file {'/var/lib/alces/clusterware/etc/profiles/slave/disk.part':
             ensure=>present,
             mode=>0644,
             owner=>'root',
             group=>'root',
             content=>template("alcesservices/cobbler/slave/disk.part.erb"),
        }
-       file {'/opt/alces/profiles/slave/disk-headnode.part':
+       file {'/var/lib/alces/clusterware/etc/profiles/slave/disk-headnode.part':
             ensure=>present,
             mode=>0644,
             owner=>'root',
             group=>'root',
             content=>template("alcesservices/cobbler/slave/disk-headnode.part.erb"),
        }
-       file {'/opt/alces/profiles/slave/disk-storage.part':
+       file {'/var/lib/alces/clusterware/etc/profiles/slave/disk-storage.part':
             ensure=>present,
             mode=>0644,
             owner=>'root',
             group=>'root',
             content=>template("alcesservices/cobbler/slave/disk-storage.part.erb"),
        }
-       file {'/opt/alces/profiles/slave/disk-login.part':
+       file {'/var/lib/alces/clusterware/etc/profiles/slave/disk-login.part':
 	    ensure=>present,
 	    mode=>0644,
             owner=>'root',
 	    group=>'root',
 	    content=>template("alcesservices/cobbler/slave/disk-login.part.erb"),
 	}
-       file {'/opt/alces/profiles/slave/disk-compute.part':
+       file {'/var/lib/alces/clusterware/etc/profiles/slave/disk-compute.part':
             ensure=>present,
             mode=>0644,
             owner=>'root',
             group=>'root',
             content=>template("alcesservices/cobbler/slave/disk-compute.part.erb"),
        }
-       file {'/opt/alces/profiles/slave/disk-vcompute.part':
+       file {'/var/lib/alces/clusterware/etc/profiles/slave/disk-vcompute.part':
             ensure=>present,
             mode=>0644,
             owner=>'root',
             group=>'root',
             content=>template("alcesservices/cobbler/slave/disk-vcompute.part.erb"),
        }
-       file {'/opt/alces/profiles/slave/packages.part':
+       file {'/var/lib/alces/clusterware/etc/profiles/slave/packages.part':
             ensure=>present,
             mode=>0644,
             owner=>'root',
             group=>'root',
             content=>template("alcesservices/cobbler/slave/packages.part.erb"),
        }
-       file {'/opt/alces/profiles/slave/postscript.part':
+       file {'/var/lib/alces/clusterware/etc/profiles/slave/postscript.part':
             ensure=>present,
             mode=>0644,
             owner=>'root',
             group=>'root',
             content=>template("alcesservices/cobbler/slave/postscript.part.erb"),
        }
-       file {'/opt/alces/profiles/slave/prescript.part':
+       file {'/var/lib/alces/clusterware/etc/profiles/slave/prescript.part':
             ensure=>present,
             mode=>0644,
             owner=>'root',
             group=>'root',
             content=>template("alcesservices/cobbler/slave/prescript.part.erb"),
        }
-       file {'/opt/alces/profiles/slave/kickstart.cfg':
+       file {'/var/lib/alces/clusterware/etc/profiles/slave/kickstart.cfg':
             ensure=>present,
             mode=>0644,
             owner=>'root',

@@ -12,7 +12,7 @@ $TTL 1W
 <%= scope.function_reverse_tail([@serviceip,scope.lookupvar("alcesnetwork::network::primary_netmask")]) %>  IN  PTR  <%=@servicealias%>.<%=scope.lookupvar('alcesnetwork::network::primary_domain')%>.
 <% end %>
 
-<% unless scope.lookupvar("alcesnetwork::network::#{@zone}_ip").to_s.empty? || scope.lookupvar("alcesnetwork::network::#{@zone}_ip") == @serviceip %>
+<% unless scope.lookupvar("alcesnetwork::network::#{@zone}_ip").to_s.empty? || scope.lookupvar("alcesnetwork::network::#{@zone}_ip") == @serviceip || scope.lookupvar("alcesnetwork::network::#{@zone}_ip").to_s == 'undef' %>
 <%= scope.function_reverse_tail([scope.lookupvar("alcesnetwork::network::#{@zone}_ip"),scope.lookupvar("alcesnetwork::network::primary_netmask")])%>	IN	PTR	<%=scope.lookupvar('::alces_hostname')%>.<%=scope.lookupvar("alcesnetwork::network::#{@zone}_domain")%>.
 <% end %>
  

@@ -58,7 +58,7 @@ echo "Generating DH.."
 ./build-dh
 
 echo "Publishing CA.."
-if [ ! -d /opt/alces/docs/vpn ]; then
-  mkdir -p /opt/alces/docs/vpn
+if [ ! -d /var/lib/alces/docs/vpn ]; then
+  mkdir -p /var/lib/alces/docs/vpn
 fi
-cp -pav $EASYRSA_PATH/keys/ca.crt /opt/alces/docs/vpn/ca.crt
+cp -pav $EASYRSA_PATH/keys/ca.crt /var/lib/alces/docs/vpn/ca.crt

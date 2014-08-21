@@ -49,12 +49,12 @@ class alcesservices::vpn (
         group=>'root',
         require=>Package['openvpn'],
       }
-      file {'/opt/alces/docs/vpn':
+      file {'/var/lib/alces/docs/vpn':
         ensure=>directory,
         mode=>0755,
         owner=>'root',
         group=>'root',
-        require=>File['/opt/alces/docs'],
+        require=>File['/var/lib/alces/docs'],
       }
       file {'/etc/openvpn/secureclient.example':
         ensure=>present,
@@ -64,13 +64,13 @@ class alcesservices::vpn (
         content=>template("alcesservices/vpn/secure.example.erb"),
         require=>[Package['openvpn']]
       }
-      file {'/opt/alces/docs/vpn/client.example':
+      file {'/var/lib/alces/docs/vpn/client.example':
         ensure=>present,
         mode=>0644,
         owner=>'root',
         group=>'root',
         content=>template("alcesservices/vpn/client.example.erb"),
-        require=>[Package['openvpn'],File['/opt/alces/docs/vpn']]
+        require=>[Package['openvpn'],File['/var/lib/alces/docs/vpn']]
       }
       file {'/var/lib/alces/bin/setup-openvpn-certs.sh':
         ensure=>present,
@@ -84,7 +84,7 @@ class alcesservices::vpn (
       exec {'setup-openvpn-certs':
         command=>inline_template("/var/lib/alces/bin/setup-openvpn-certs.sh <%=@masteralias%>.<%=scope.lookupvar('alcesnetwork::network::primary_domain')%>"),
         creates=>'/etc/openvpn/easy-rsa',
-        require=>[File['/var/lib/alces/bin/setup-openvpn-certs.sh'],File['/opt/alces/docs/vpn']]
+        require=>[File['/var/lib/alces/bin/setup-openvpn-certs.sh'],File['/var/lib/alces/docs/vpn']]
       }
     }
     if $alcesservices::role == 'slave' {

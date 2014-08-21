@@ -17,7 +17,7 @@ class alcesservices::httpd (
       ensure=>'running',
       require=>Package['httpd']
     }
-    file {'/opt/alces/docs':
+    file {'/var/lib/alces/docs':
       ensure=>directory,
       owner=>'root',
       group=>'root',

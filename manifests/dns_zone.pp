@@ -5,6 +5,8 @@
 ##
 ################################################################################
 define alcesservices::dns_zone (
+  $serviceip=$alcesservices::master_ip,
+  $servicealias=$alcesservices::master_alias,
   $zone=$title,
   $zonefilename_header="/var/named/",
   $replacedns=true,
