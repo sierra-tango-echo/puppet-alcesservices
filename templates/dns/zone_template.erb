@@ -15,7 +15,7 @@ $TTL 1W
 
 <% end %>
 
-<% unless scope.lookupvar("alcesnetwork::network::#{@zone}_ip").to_s.empty? %>
+<% unless scope.lookupvar("alcesnetwork::network::#{@zone}_ip").to_s.empty? || scope.lookupvar("alcesnetwork::network::#{@zone}_ip").to_s == 'undef' %>
 <% unless scope.lookupvar("alcesnetwork::network::#{@zone}_ip") == @serviceip%>
 <%=scope.lookupvar('::alces_hostname')%>        IN      A       <%=scope.lookupvar("alcesnetwork::network::#{@zone}_ip")%>
 <% else %>

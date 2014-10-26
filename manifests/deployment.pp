@@ -70,15 +70,6 @@ class alcesservices::deployment (
             require=>Package['cobbler'],
             notify=>Service['cobblerd']
        }
-       file {'/etc/httpd/conf.d/alces-depot.conf':
-             ensure=>present,
-             mode=>0644,
-             owner=>'apache',
-             group=>'apache',
-             content=>template("alcesservices/cobbler/alces-depot.conf.erb"),
-             require=>Package['httpd'],
-             notify=>Service['httpd']
-       }
        file {'/etc/httpd/conf.d/alces-profiles.conf':
              ensure=>present,
              mode=>0644,
@@ -213,14 +204,14 @@ class alcesservices::deployment (
        }
        
        #Cobbler internal config files
-       file {'/var/lib/cobbler/config/distros.d/base_os.json':
+       file {'/var/lib/cobbler/config/distros.d/centos6.5.json':
             ensure=>present,
             mode=>0644,
             owner=>'root',
             group=>'root',
             require=>Package['cobbler'],
             notify=>Service['cobblerd'],
-            content=>template("alcesservices/cobbler/config/base_os.json.erb"),
+            content=>template("alcesservices/cobbler/config/centos6.5.json"),
             replace=>$replacecobblerdb,
        }
        file {'/var/lib/cobbler/config/profiles.d/BASE.json':
