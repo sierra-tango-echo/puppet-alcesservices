@@ -18,10 +18,6 @@ class alcesservices (
   $machine = hiera('alcesbase::machine','generic'),
   #Cluster name:
   $clustername = hiera('alcesbase::clustername','alcescluster'),
-  #Master IP (network master IP addr)
-  $master_ip = hiera('alcesbase::masterip'),
-  #Master Alias (network master dns alias)
-  $master_alias = hiera('alcesbase::masteralias'),
   #HA (ha enabled?)
   $ha = $alcesbase::ha,
   #Keep os jitter minimal
