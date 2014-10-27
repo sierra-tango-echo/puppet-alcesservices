@@ -21,9 +21,14 @@ class alcesservices::nfs (
        service {'nfs':
              enable=>'true',
              ensure=>'running',
-             require=>Package['nfs-utils']
+             require=>[Package['nfs-utils'],Service['rpcbind']]
        }
        service {"nfslock":
+             enable=>'true',
+             ensure=>'running',
+             require=>[Package['nfs-utils'],Service['rpcbind']]
+       }
+       service ("rpcbind":
              enable=>'true',
              ensure=>'running',
              require=>Package['nfs-utils']
