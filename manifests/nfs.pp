@@ -16,18 +16,19 @@ class alcesservices::nfs (
     ensure=>'installed'
   }
 
-  if ($fsexports != undef) or ($ha) {
-     service {'nfs':
+  if ($fsexports != undef) {
+     if ! $ha {
+       service {'nfs':
              enable=>'true',
              ensure=>'running',
              require=>Package['nfs-utils']
-     }
-     service {"nfslock":
+       }
+       service {"nfslock":
              enable=>'true',
              ensure=>'running',
              require=>Package['nfs-utils']
-     }
-     file {'/etc/exports':
+       }
+       file {'/etc/exports':
           ensure=>present,
           mode=>0644,
           owner=>'root',
@@ -36,6 +37,13 @@ class alcesservices::nfs (
           content=>template('alcesservices/nfs/exports.erb'),
           require=>Package['nfs-utils'],
           notify=>Service['nfs']
+       }
+       service {'smb':
+             enable=>'true',
+             ensure=>'running',
+             require=>Package['samba']
+       }
+       create_resources( alcesservices::nfs::fsexport, $fsexports )
      }
      file {'/etc/sysconfig/nfs':
           ensure=>present,
@@ -47,12 +55,7 @@ class alcesservices::nfs (
           notify=>Service['nfs']
      }
      package {'samba':
-          ensure=>installed
-     }
-     service {'smb':
-             enable=>'true',
-             ensure=>'running',
-             require=>Package['samba']
+         ensure=>installed
      }
      file {'/etc/samba/smb.conf':
           ensure=>present,
@@ -62,8 +65,7 @@ class alcesservices::nfs (
           content=>template('alcesservices/nfs/samba.conf.erb'),
           require=>Package['samba'],
           notify=>Service['smb']
-     }  
-     create_resources( alcesservices::nfs::fsexport, $fsexports )
+      }  
   }
 
   if $fsimports != undef {

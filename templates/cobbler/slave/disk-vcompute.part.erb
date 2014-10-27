@@ -1,9 +1,0 @@
-zerombr
-bootloader --location=mbr --driveorder=%DISK1% --append="%BOOTLOADERAPPEND%"
-clearpart --all --initlabel
-
-#Disk partitioning information
-part /boot --fstype ext4 --size=4096 --asprimary --ondisk %DISK1%
-part pv.01 --size=1 --grow --asprimary --ondisk %DISK1%
-volgroup system pv.01
-logvol  /  --fstype ext4 --vgname=system  --size=1  --name=root --grow

@@ -1,2 +1,0 @@
-headnode,headnode.<%=scope.lookupvar('alcesnetwork::network::primary_domain')%>,<%=@masterip%>,<%=@masteralias%>.<%=scope.lookupvar('alcesnetwork::network::primary_domain')%>  ssh-rsa <%=@rsapubkey%>
-<%= scope.function_template(["alcesnetwork/partials/ssh_known_hosts.erb"])-%>

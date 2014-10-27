@@ -1,7 +1,0 @@
-headnode
-master
-service
-headnode.<%=scope.lookupvar('alcesnetwork::network::primary_domain')%>
-master.<%=scope.lookupvar('alcesnetwork::network::primary_domain')%>
-service.<%=scope.lookupvar('alcesnetwork::network::primary_domain')%>
-<%= scope.function_template(["alcesservices/partials/ssh/hosts.equiv.erb"])%>
