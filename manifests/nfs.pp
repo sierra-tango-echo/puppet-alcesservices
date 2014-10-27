@@ -28,7 +28,7 @@ class alcesservices::nfs (
              ensure=>'running',
              require=>[Package['nfs-utils'],Service['rpcbind']]
        }
-       service ("rpcbind":
+       service {"rpcbind":
              enable=>'true',
              ensure=>'running',
              require=>Package['nfs-utils']
