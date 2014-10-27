@@ -30,7 +30,7 @@ define alcesservices::nfs::fsexport (
   file_line {"export-${path}":
     path=>'/etc/exports',
     ensure=>present,
-    line=>inline_template("<%=@path%> <%=@networkstring%>(<%=@nfsexportoptions%>)(<%=@nfsexportoptions%>)"),
+    line=>inline_template("<%=@path%> <%=@networkstring%>(<%=@nfsexportoptions%>)"),
     require=>File['/etc/exports'],
     notify=>Service['nfs']
   } 
